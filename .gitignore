@@ -3,3 +3,4 @@
 node.js_homeworks.iml
 node_modules
 dist
+.env
