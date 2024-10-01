@@ -8,28 +8,11 @@ class UserService {
   }
 
   public async create(data: IUser): Promise<IUser> {
-    if (!data.name || data.name.length < 3) {
-      throw new ApiError(
-        "Name is required and should be at least 3 characters long",
-        400,
-      );
-    }
-    if (!data.email || data.email.search(/^(\w{3,16})(@gmail\.com)$/gm) !== 0) {
-      throw new ApiError(
-        "only for  gmail.com services name length 3- 16 characters",
-        400,
-      );
-    }
-    if (!data.password || data.password.length < 6) {
-      throw new ApiError(
-        "Password is required and should be at least 6 characters long",
-        400,
-      );
-    }
+    await this.isEmailExistOrThrow(data.email);
     return await userRepository.create(data);
   }
 
-  public async getById(userId: string) {
+  public async getById(userId: string): Promise<IUser> {
     const user = userRepository.getById(userId);
     if (!user) {
       throw new ApiError("Not found", 404);
@@ -38,29 +21,17 @@ class UserService {
   }
 
   public async updateById(userId: string, data: IUser): Promise<IUser> {
-    if (!data.name || data.name.length < 3) {
-      throw new ApiError(
-        "Name is required and should be at least 3 characters long",
-        400,
-      );
-    }
-    if (!data.email || data.email.search(/^(\w{3,16})(@gmail\.com)$/gm) !== 0) {
-      throw new ApiError(
-        "only for  gmail.com services name length 3- 16 characters",
-        400,
-      );
-    }
-    if (!data.password || data.password.length < 6) {
-      throw new ApiError(
-        "Password is required and should be at least 6 characters long",
-        400,
-      );
-    }
     return await userRepository.updateById(userId, data);
   }
 
-  public async deleteById(userId: string) {
+  public async deleteById(userId: string): Promise<void> {
     return await userRepository.deleteById(userId);
+  }
+  private async isEmailExistOrThrow(email: string): Promise<void> {
+    const user = await userRepository.getByEmail(email);
+    if (user) {
+      throw new ApiError("Email already exists", 409);
+    }
   }
 }
 
