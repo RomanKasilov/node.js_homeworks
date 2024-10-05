@@ -22,7 +22,7 @@ class UserRepository {
     await User.deleteOne({ _id: userId });
   }
   public async getByEmail(email: string): Promise<IUser | undefined> {
-    return await User.findOne({ email });
+    return await User.findOne({ email }).select("+password");
   }
 }
 export const userRepository = new UserRepository();

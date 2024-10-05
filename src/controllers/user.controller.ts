@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ITokenPayload } from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
@@ -8,17 +9,6 @@ class UserController {
     try {
       const users = await userService.getAll();
       res.send(users);
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  public async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const data = req.body as IUser;
-      const result = await userService.create(data);
-
-      res.status(201).send(result);
     } catch (e) {
       next(e);
     }
@@ -32,13 +22,22 @@ class UserController {
       next(e);
     }
   }
+  public async getMe(req: Request, res: Response, next: NextFunction) {
+    const payload = req.res.locals.jwtPayload as ITokenPayload;
+    try {
+      const user = await userService.getById(payload.id);
+      res.send(user);
+    } catch (e) {
+      next(e);
+    }
+  }
 
-  public async updateById(req: Request, res: Response, next: NextFunction) {
+  public async updateMe(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body as IUser;
-      const userId = req.params.userId;
+      const payload = req.res.locals.jwtPayload as ITokenPayload;
 
-      const result = await userService.updateById(userId, data);
+      const result = await userService.updateMe(payload.id, data);
 
       res.status(201).send(result);
     } catch (e) {
@@ -46,10 +45,10 @@ class UserController {
     }
   }
 
-  public async deleteById(req: Request, res: Response, next: NextFunction) {
+  public async deleteMe(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = req.params.userId;
-      await userService.deleteById(userId);
+      const payload = req.res.locals.jwtPayload as ITokenPayload;
+      await userService.deleteMe(payload.id);
       res.sendStatus(204);
     } catch (e) {
       next(e);
