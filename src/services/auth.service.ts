@@ -1,10 +1,14 @@
 import { ApiError } from "../errors/api.error";
-import { IUserWithTokens } from "../interfaces/token.interface";
+import {
+  ITokenPair,
+  ITokenPayload,
+  IUserWithTokens,
+} from "../interfaces/token.interface";
 import { ILoginUser, IUser } from "../interfaces/user.interface";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
-import { passwordService } from "../validators/password.service";
 import { jwtService } from "./jwt.service";
+import { passwordService } from "./password.service";
 
 class AuthService {
   public async register(data: IUser): Promise<IUserWithTokens> {
@@ -13,7 +17,7 @@ class AuthService {
     const user = await userRepository.create(data);
 
     const tokenPair = jwtService.createTokenPair({
-      id: user._id,
+      userId: user._id,
       name: user.name,
     });
     await tokenRepository.create({ ...tokenPair, userId: user._id });
@@ -32,7 +36,7 @@ class AuthService {
       throw new ApiError("Invalid password or login", 401);
     }
     const tokenPair = jwtService.createTokenPair({
-      id: user._id,
+      userId: user._id,
       name: user.name,
     });
     await tokenRepository.create({ ...tokenPair, userId: user._id });
@@ -43,6 +47,18 @@ class AuthService {
     if (user) {
       throw new ApiError("Email already exists", 409);
     }
+  }
+  public async refreshToken(
+    refreshToken: string,
+    payload: ITokenPayload,
+  ): Promise<ITokenPair> {
+    await tokenRepository.deleteByParams({ refreshToken });
+    const tokenPair = jwtService.createTokenPair({
+      userId: payload.userId,
+      name: payload.name,
+    });
+    await tokenRepository.create({ ...tokenPair, userId: payload.userId });
+    return tokenPair;
   }
 }
 export const authService = new AuthService();

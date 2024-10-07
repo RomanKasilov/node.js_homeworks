@@ -7,7 +7,7 @@ import { ApiError } from "../errors/api.error";
 export { isObjectIdOrHexString } from "mongoose";
 class CommonMiddleware {
   public isIdValid(key: string) {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return (req: Request, res: Response, next: NextFunction): void => {
       try {
         if (!isObjectIdOrHexString(req.params[key])) {
           throw new ApiError("Invalid ID", 400);
@@ -19,7 +19,11 @@ class CommonMiddleware {
     };
   }
   public isBodyValid(validator: ObjectSchema) {
-    return async (req: Request, res: Response, next: NextFunction) => {
+    return async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): Promise<void> => {
       try {
         req.body = await validator.validateAsync(req.body);
         next();

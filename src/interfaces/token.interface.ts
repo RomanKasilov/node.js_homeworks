@@ -7,7 +7,7 @@ interface IToken {
   userId: string;
 }
 interface ITokenPayload {
-  id: string;
+  userId: string;
   name: string;
 }
 interface ITokenPair {

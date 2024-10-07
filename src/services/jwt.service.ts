@@ -26,7 +26,9 @@ class JwtService {
           secret = configs.JWT_REFRESH_SECRET;
           break;
       }
-      return jwt.verify(token, secret) as ITokenPayload;
+      const payload = jwt.verify(token, secret) as ITokenPayload;
+      console.log(`payload: ${payload}`);
+      return payload;
     } catch (e) {
       console.log(e);
       throw new ApiError("Invalid token", 401);

@@ -14,6 +14,7 @@ class UserService {
     }
     return await user;
   }
+
   public async getMe(userId: string): Promise<IUser> {
     const user = userRepository.getById(userId);
     if (!user) {
