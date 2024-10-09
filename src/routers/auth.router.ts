@@ -12,11 +12,21 @@ router.post(
   commonMiddleware.isBodyValid(UserValidator.create),
   authController.register,
 );
-router.post("/login", authController.login);
+router.post(
+  "/login",
+  commonMiddleware.isBodyValid(UserValidator.login),
+  authController.login,
+);
 router.post(
   "/refresh",
   authMiddleware.checkRefreshToken,
   authController.refresh,
+);
+router.post("/logout", authMiddleware.checkAccessToken, authController.logout);
+router.post(
+  "/logout/all",
+  authMiddleware.checkAccessToken,
+  authController.logoutAll,
 );
 
 export const authRouter = router;
