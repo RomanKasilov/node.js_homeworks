@@ -14,7 +14,10 @@ class UserRepository {
     return await User.findById(userId);
   }
 
-  public async updateById(userId: string, data: IUser): Promise<IUser> {
+  public async updateById(
+    userId: string,
+    data: Partial<IUser>,
+  ): Promise<IUser> {
     return await User.findByIdAndUpdate(userId, data, { new: true });
   }
 

@@ -14,3 +14,4 @@ export interface IUser {
   updateAt: Date;
 }
 export type ILoginUser = Pick<IUser, "email" | "password">;
+export type ForgotPasswordSetType = Pick<IUser, "password"> & { token: string };
