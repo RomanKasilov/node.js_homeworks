@@ -29,7 +29,7 @@ class JwtService {
         expiresIn = configs.JWT_ACTION_FORGOT_PASSWORD_EXPIRATION;
         break;
       case ActionTokenTypeEnum.VERIFY_EMAIL:
-        secret = configs.JWT_ACTION_FORGOT_PASSWORD_SECRET;
+        secret = configs.JWT_ACTION_VERIFY_SECRET;
         expiresIn = configs.JWT_ACTION_VERIFY_EXPIRATION;
         break;
       default:
@@ -55,7 +55,7 @@ class JwtService {
           secret = configs.JWT_ACTION_FORGOT_PASSWORD_SECRET;
           break;
         case ActionTokenTypeEnum.VERIFY_EMAIL:
-          secret = configs.JWT_ACTION_FORGOT_PASSWORD_SECRET;
+          secret = configs.JWT_ACTION_VERIFY_SECRET;
           break;
         default:
           throw new ApiError("Invalid token type", 400);

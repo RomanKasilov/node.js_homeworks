@@ -6,6 +6,7 @@ export const configs = {
   APP_PORT: process.env.APP_PORT,
   APP_HOST: process.env.APP_HOST,
   APP_FRONT_URL: process.env.APP_FRONT_URL,
+  APP_EMAIL: process.env.APP_EMAIL,
 
   MONGO_URI: process.env.MONGO_URI,
 
@@ -17,6 +18,7 @@ export const configs = {
     process.env.JWT_ACTION_FORGOT_PASSWORD_SECRET,
   JWT_ACTION_FORGOT_PASSWORD_EXPIRATION:
     process.env.JWT_ACTION_FORGOT_PASSWORD_EXPIRATION,
+  JWT_ACTION_VERIFY_SECRET: process.env.JWT_ACTION_VERIFY_SECRET,
   JWT_ACTION_VERIFY_EXPIRATION: process.env.JWT_ACTION_VERIFY_EXPIRATION,
 
   SMTP_EMAIL: process.env.SMTP_EMAIL,

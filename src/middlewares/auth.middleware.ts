@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from "express";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { TokenTypeEnum } from "../enums/tokenType.enum";
 import { ApiError } from "../errors/api.error";
-import { ForgotPasswordSetType } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { jwtService } from "../services/jwt.service";
@@ -60,27 +59,28 @@ class AuthMiddleware {
       next(e);
     }
   }
-  public async checkActionToken(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const { token } = req.body as ForgotPasswordSetType;
-      const payload = jwtService.verifyToken(
-        token,
-        ActionTokenTypeEnum.FORGOT_PASSWORD,
-      );
-      const tokenFromDB = await actionTokenRepository.getByToken(token);
-      console.log(tokenFromDB);
-      if (!tokenFromDB) {
-        throw new ApiError("Token is not valid", 401);
+  public checkActionToken(type: ActionTokenTypeEnum) {
+    return async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): Promise<void> => {
+      try {
+        const token = req.body.token as string;
+        if (!token) {
+          throw new ApiError("Token is not provided", 401);
+        }
+        const payload = jwtService.verifyToken(token, type);
+        const tokenFromDB = await actionTokenRepository.getByToken(token);
+        if (!tokenFromDB) {
+          throw new ApiError("Token is not valid", 401);
+        }
+        req.res.locals.jwtPayload = payload;
+        next();
+      } catch (e) {
+        next(e);
       }
-      req.res.locals.jwtPayload = payload;
-      next();
-    } catch (e) {
-      next(e);
-    }
+    };
   }
 }
 export const authMiddleware = new AuthMiddleware();
