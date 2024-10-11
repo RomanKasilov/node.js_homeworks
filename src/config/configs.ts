@@ -5,6 +5,7 @@ dotenv.config();
 export const configs = {
   APP_PORT: process.env.APP_PORT,
   APP_HOST: process.env.APP_HOST,
+  APP_EMAIL: process.env.APP_EMAIL,
   MONGO_URI: process.env.MONGO_URI,
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
   JWT_ACCESS_EXPIRATION: process.env.JWT_ACCESS_EXPIRATION,

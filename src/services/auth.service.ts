@@ -1,3 +1,4 @@
+import { configs } from "../config/configs";
 import { EmailTypeEnum } from "../enums/emailType.enum";
 import { ApiError } from "../errors/api.error";
 import {
@@ -23,11 +24,9 @@ class AuthService {
       name: user.name,
     });
     await tokenRepository.create({ ...tokenPair, userId: user._id });
-    await emailService.sendEmail(
-      "kasiakasilov@gmail.com",
-      EmailTypeEnum.WELCOME,
-      { name: user.name },
-    ); //data.email
+    await emailService.sendEmail(configs.APP_EMAIL, EmailTypeEnum.WELCOME, {
+      name: user.name,
+    }); //data.email
     return { user, tokenPair };
   }
   public async login(data: ILoginUser): Promise<IUserWithTokens> {
@@ -69,25 +68,17 @@ class AuthService {
   }
   public async logout(tokenId: string, payload: ITokenPayload): Promise<void> {
     const user = await userRepository.getById(payload.userId);
-    await emailService.sendEmail(
-      "kasiakasilov@gmail.com",
-      EmailTypeEnum.LOGOUT,
-      {
-        name: user.name,
-      },
-    );
+    await emailService.sendEmail(configs.APP_EMAIL, EmailTypeEnum.LOGOUT, {
+      name: user.name,
+    });
     await tokenRepository.deleteOneByParams({ _id: tokenId });
   }
   public async logoutAll(payload: ITokenPayload): Promise<void> {
     const user = await userRepository.getById(payload.userId);
     await tokenRepository.deleteManyByParams({ userId: payload.userId });
-    await emailService.sendEmail(
-      "kasiakasilov@gmail.com",
-      EmailTypeEnum.LOGOUT,
-      {
-        name: user.name,
-      },
-    );
+    await emailService.sendEmail(configs.APP_EMAIL, EmailTypeEnum.LOGOUT, {
+      name: user.name,
+    });
   }
 }
 export const authService = new AuthService();
