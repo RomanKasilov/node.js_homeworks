@@ -5,6 +5,8 @@ interface IToken {
   accessToken: string;
   refreshToken: string;
   userId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 interface ITokenPayload {
   userId: string;

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { ITokenPayload } from "../interfaces/token.interface";
 import {
+  ChangePasswordSetType,
   ForgotPasswordSetType,
   ILoginUser,
   IUser,
@@ -113,6 +114,21 @@ class AuthController {
       await authService.forgotSetPassword(password, userId);
 
       res.status(204).json({ message: "password was changed" });
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async changePassword(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const data = req.body as ChangePasswordSetType;
+      const { userId } = req.res.locals.jwtPayload as ITokenPayload;
+      await authService.changePassword(data, userId);
+
+      res.json({ message: "password was changed" }).status(204);
     } catch (e) {
       next(e);
     }

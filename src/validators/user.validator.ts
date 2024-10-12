@@ -30,4 +30,8 @@ export class UserValidator {
     email: this.email,
     password: this.password,
   });
+  public static changePassword = joi.object({
+    password: this.password,
+    newPassword: this.password,
+  });
 }

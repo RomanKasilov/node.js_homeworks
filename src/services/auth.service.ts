@@ -7,7 +7,11 @@ import {
   ITokenPayload,
   IUserWithTokens,
 } from "../interfaces/token.interface";
-import { ILoginUser, IUser } from "../interfaces/user.interface";
+import {
+  ChangePasswordSetType,
+  ILoginUser,
+  IUser,
+} from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
@@ -143,6 +147,22 @@ class AuthService {
       }),
       tokenRepository.deleteManyByParams({ userId: userId }),
     ]);
+  }
+  public async changePassword(
+    data: ChangePasswordSetType,
+    userId: string,
+  ): Promise<void> {
+    const user = await userRepository.getById(userId);
+    const isPasswordCorrect = passwordService.compare(
+      data.password,
+      user.password,
+    );
+    if (!isPasswordCorrect) {
+      throw new ApiError("Invalid password", 401);
+    }
+    const password = await passwordService.hash(data.newPassword);
+    await userRepository.updateById(userId, { password });
+    await tokenRepository.deleteManyByParams({ userId });
   }
 }
 

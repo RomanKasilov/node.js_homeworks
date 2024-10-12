@@ -15,3 +15,6 @@ export interface IUser {
 }
 export type ILoginUser = Pick<IUser, "email" | "password">;
 export type ForgotPasswordSetType = Pick<IUser, "password"> & { token: string };
+export type ChangePasswordSetType = Pick<IUser, "password"> & {
+  newPassword: string;
+};

@@ -11,7 +11,7 @@ class UserRepository {
   }
 
   public async getById(userId: string): Promise<IUser | undefined> {
-    return await User.findById(userId);
+    return await User.findById(userId).select("+password");
   }
 
   public async updateById(
