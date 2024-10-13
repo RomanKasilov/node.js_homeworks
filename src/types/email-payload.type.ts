@@ -11,9 +11,6 @@ export type EmailPayloadType = {
     EmailPayloadCombinedType,
     "actionToken"
   >;
-  [EmailTypeEnum.OLD_VISIT]: PickRequired<
-    EmailPayloadCombinedType,
-    "name" | "email"
-  >;
+  [EmailTypeEnum.OLD_VISIT]: PickRequired<EmailPayloadCombinedType, "name">;
   [EmailTypeEnum.LOGOUT]: PickRequired<EmailPayloadCombinedType, "name">;
 };

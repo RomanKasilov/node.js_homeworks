@@ -13,6 +13,7 @@ import {
   IUser,
 } from "../interfaces/user.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";
+import { oldPasswordRepository } from "../repositories/old-password.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { emailService } from "./email.service";
@@ -152,7 +153,10 @@ class AuthService {
     data: ChangePasswordSetType,
     userId: string,
   ): Promise<void> {
-    const user = await userRepository.getById(userId);
+    const [user, oldPasswords] = await Promise.all([
+      userRepository.getById(userId),
+      oldPasswordRepository.findAllByUserId(userId),
+    ]);
     const isPasswordCorrect = passwordService.compare(
       data.password,
       user.password,
@@ -160,9 +164,27 @@ class AuthService {
     if (!isPasswordCorrect) {
       throw new ApiError("Invalid password", 401);
     }
+    const usedPasswords = [...oldPasswords, { password: user.password }];
+    await Promise.all(
+      usedPasswords.map(async (item: { password: string }) => {
+        const isUsed = await passwordService.compare(
+          data.newPassword,
+          item.password,
+        );
+        if (isUsed) {
+          throw new ApiError("Password already used", 409);
+        }
+      }),
+    );
     const password = await passwordService.hash(data.newPassword);
-    await userRepository.updateById(userId, { password });
-    await tokenRepository.deleteManyByParams({ userId });
+    await Promise.all([
+      userRepository.updateById(userId, { password }),
+      oldPasswordRepository.create({
+        _userId: userId,
+        password: user.password,
+      }),
+      tokenRepository.deleteManyByParams({ userId }),
+    ]);
   }
 }
 

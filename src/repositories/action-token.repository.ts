@@ -5,7 +5,7 @@ class ActionTokenRepository {
   public async create(data: IActionToken): Promise<IActionToken> {
     return await ActionToken.create(data);
   }
-  public async getByToken(token: string): Promise<IActionToken | null> {
+  public async getByToken(token: string): Promise<IActionToken | undefined> {
     return await ActionToken.findOne({ token });
   }
   public async deleteManyByParams(

@@ -9,7 +9,7 @@ const handler = async (): Promise<void> => {
     const { value, unit } = timeHelper.parseConfigStringValue(
       configs.JWT_REFRESH_EXPIRATION,
     );
-    const date = timeHelper.subtractPyParams(value, unit);
+    const date = timeHelper.subtractByParamsToDate(value, unit);
     const deletedCount = await tokenRepository.deleteOlderThan(date);
     console.log(`${deletedCount} old tokensPair was deleted`);
   } catch (e) {
@@ -17,4 +17,4 @@ const handler = async (): Promise<void> => {
   }
 };
 
-export const removeOldTokensCronJob = new CronJob("* */2 * * *", handler);
+export const removeOldTokensCronJob = new CronJob("* */1 * * *", handler);
