@@ -21,6 +21,11 @@ router.put(
   commonMiddleware.isBodyValid(UserValidator.update),
   userController.updateMe,
 );
+router.post(
+  "/me/avatar",
+  authMiddleware.checkAccessToken,
+  userController.uploadAvatar,
+);
 router.delete("/me", authMiddleware.checkAccessToken, userController.deleteMe);
 
 router.get(

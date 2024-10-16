@@ -8,6 +8,7 @@ export interface IUser {
   gender?: GenderEnum;
   password: string;
   role: string;
+  avatar?: string;
   isVerified?: boolean;
   isDeleted?: boolean;
   createAt: Date;

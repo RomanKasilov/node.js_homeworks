@@ -36,6 +36,7 @@ const userSchema = new Schema(
       enum: RoleEnum,
       default: RoleEnum.USER,
     },
+    avatar: { type: String, required: false },
     isVerified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
   },
