@@ -43,8 +43,18 @@ class UserService {
       FileItemTypeEnum.USER,
       user._id,
     );
-    const updatedUser = await userRepository.updateById(user._id, { avatar });
-    return updatedUser;
+    if (user.avatar) {
+      await s3Service.deleteFile(user.avatar)
+    }
+    return   await userRepository.updateById(user._id, { avatar });
+
+  }
+  public async deleteAvatar(userId:string):Promise<IUser>{
+    const user = await userRepository.getById(userId);
+    if (user.avatar) {
+      await s3Service.deleteFile(user.avatar)
+    }
+    return await userRepository.updateById(userId, {avatar: null})
   }
 }
 

@@ -96,6 +96,23 @@ class UserController {
       next(e);
     }
   }
+  public async deleteAvatar(
+      req: Request,
+      res: Response,
+      next: NextFunction,
+  ): Promise<void>{
+   try{
+     const { userId } = req.res.locals.jwtPayload as ITokenPayload;
+     const user = await userService.deleteAvatar(userId)
+     const result = userPresenter.toPublicResDto(user)
+     res.json(result).status(201)
+
+   }catch (e){
+     next(e)
+   }
+
+  }
+
 }
 
 export const userController = new UserController();
